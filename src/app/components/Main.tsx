@@ -53,7 +53,7 @@ const Main: React.FC<CompProps> = ({ data }) => {
                     className={
                         isOn
                             ? "transition-all animated-bulb"
-                            : "transition-all hidden"
+                            : "transition-all "
                     }
                 />
 
