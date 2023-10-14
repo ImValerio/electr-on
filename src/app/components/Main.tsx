@@ -25,13 +25,18 @@ const Main: React.FC<CompProps> = ({ data }) => {
         const rv: LogRecord[] = await data.json();
         checkIfIsOn(rv);
         setLogs(rv);
-        setLastLog(new Date(rv[0].date).toLocaleString())
+        setLastLog(dateToString(rv[0].date))
     };
+
+    const dateToString = (dateStr:string)=>{
+
+       return new Date(dateStr.split("+")[0].trim()).toLocaleString()
+    }
 
     useEffect(() => {
         checkIfIsOn(data);
         setInterval(pollingData, 1 * 60 * 1000);
-        setLastLog(new Date(data[0].date).toLocaleString());
+        setLastLog(dateToString(data[0].date));
     }, []);
 
     if (!data) return <Loader></Loader>;
