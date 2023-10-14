@@ -4,18 +4,20 @@ import Image from "next/image";
 import Loader from "./Loader";
 
 interface CompProps {
-    data: LogRecord[];
+    data: string;
 }
 
-const Main: React.FC<CompProps> = ({ data }) => {
+const Main: React.FC<CompProps> = ({ data: propData }) => {
     const [isOn, setIsOn] = useState(false);
     const [lastLog, setLastLog] = useState("");
-    const [logs, setLogs]:any = useState([]);
+    const [logs, setLogs]: any = useState(null);
 
     const checkIfIsOn = (lastLogs: LogRecord[]) => {
         const now = new Date().getTime(); //  current date
-        const lastLog = new Date(lastLogs[0].date.split("+")[0].trim()).getTime(); // last log date
-        const condition = Math.floor((now - lastLog) / (1000 * 60))-120 < 6;
+        const lastLog = new Date(
+            lastLogs[0].date.split("+")[0].trim()
+        ).getTime(); // last log date
+        const condition = Math.floor((now - lastLog) / (1000 * 60)) - 120 < 6;
         setIsOn(condition);
     };
 
@@ -25,21 +27,27 @@ const Main: React.FC<CompProps> = ({ data }) => {
         const rv: LogRecord[] = await data.json();
         checkIfIsOn(rv);
         setLogs(rv);
-        setLastLog(dateToString(rv[0].date))
+        setLastLog(dateToString(rv[0].date));
     };
 
-    const dateToString = (dateStr:string)=>{
-
-       return new Date(dateStr.split("+")[0].trim()).toLocaleString("it")
-    }
+    const dateToString = (dateStr: string) => {
+        const date = new Date(dateStr.split("+")[0].trim());
+        date.setHours(date.getHours() + 2)
+        return date.toLocaleString("it");
+    };
 
     useEffect(() => {
-        pollingData()
+        
+        setLogs(() => {
+            const tmpLogs = JSON.parse(propData);
+            checkIfIsOn(tmpLogs)
+            setLastLog(dateToString(tmpLogs[0].date));
+            return tmpLogs;
+        });
         setInterval(pollingData, 1 * 60 * 1000);
-        setLastLog(dateToString(data[0].date));
     }, []);
 
-    if (!data) return <Loader></Loader>;
+    if (!logs) return <Loader></Loader>;
 
     return (
         <main
@@ -63,10 +71,18 @@ const Main: React.FC<CompProps> = ({ data }) => {
                 />
 
                 <div className="mt-5">
-                    <h1 className="text-center text-white font-bold">
+                    <h1 className={isOn ? "text-center font-bold transition-all text-white" : "text-center font-bold transition-all text-black"}>
                         Ultima attività:
                     </h1>
-                    <h1 className={isOn ? "text-center text-green-600": "text-center text-red-600 "}>{lastLog}</h1>
+                    <h1
+                        className={
+                            isOn
+                                ? "text-center text-green-600"
+                                : "text-center text-red-600 "
+                        }
+                    >
+                        {lastLog}
+                    </h1>
                 </div>
             </div>
         </main>
