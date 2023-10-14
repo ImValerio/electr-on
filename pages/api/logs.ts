@@ -1,5 +1,6 @@
+import { getLogs } from "@/app/lib/utils";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getLogs } from "../../src/app/page";
+
 
 export default async function handler(
     req: NextApiRequest,

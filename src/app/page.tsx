@@ -1,6 +1,5 @@
-import connectDB from "./lib/dbConnect";
-import Log from "./models/Log";
 import Main from "./components/Main";
+import { getLogs } from "./lib/utils";
 
 export default async function Home() {
     // const data = await getLogs();
@@ -8,18 +7,11 @@ export default async function Home() {
 
 
     return (
+        //@ts-ignore
         <Main data={data}></Main>
     );
 }
 
 
-export const getLogs = async () => {
-    await connectDB();
 
-    // @ts-ignore
-    return Log.find()
-        .sort("-date")
-        .limit(20)
-        .lean();
-};
 

@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Loader from "./Loader";
-import { getLogs } from "../page";
 
 interface CompProps {
     data: LogRecord[];
@@ -13,9 +12,9 @@ const Main: React.FC<CompProps> = ({ data }) => {
     const [lastLog, setLastLog] = useState("");
     const [logs, setLogs]:any = useState([]);
 
-    const checkIfIsOn = () => {
+    const checkIfIsOn = (lastLogs: LogRecord[]) => {
         const now = new Date().getTime(); //  current date
-        const lastLog = new Date(data[0].date).getTime(); // last log date
+        const lastLog = new Date(lastLogs[0].date).getTime(); // last log date
         const condition = Math.floor((now - lastLog) / (1000 * 60)) < 6;
         setIsOn(condition);
     };
@@ -24,13 +23,14 @@ const Main: React.FC<CompProps> = ({ data }) => {
         const data = await fetch("/api/logs");
 
         const rv: LogRecord[] = await data.json();
+        checkIfIsOn(rv);
         setLogs(rv);
         setLastLog(new Date(rv[0].date).toLocaleString())
     };
 
     useEffect(() => {
-        checkIfIsOn();
-        setInterval(pollingData, 2 * 60 * 1000);
+        checkIfIsOn(data);
+        setInterval(pollingData, 1 * 60 * 1000);
         setLastLog(new Date(data[0].date).toLocaleString());
     }, []);
 
