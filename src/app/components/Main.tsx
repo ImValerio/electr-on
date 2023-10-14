@@ -30,7 +30,7 @@ const Main: React.FC<CompProps> = ({ data }) => {
 
     const dateToString = (dateStr:string)=>{
 
-       return new Date(dateStr.split("+")[0].trim()).toLocaleString()
+       return new Date(dateStr.split("+")[0].trim()).toLocaleString("it")
     }
 
     useEffect(() => {
