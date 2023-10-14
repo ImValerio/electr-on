@@ -14,8 +14,8 @@ const Main: React.FC<CompProps> = ({ data }) => {
 
     const checkIfIsOn = (lastLogs: LogRecord[]) => {
         const now = new Date().getTime(); //  current date
-        const lastLog = new Date(lastLogs[0].date).getTime(); // last log date
-        const condition = Math.floor((now - lastLog) / (1000 * 60)) < 6;
+        const lastLog = new Date(lastLogs[0].date.split("+")[0].trim()).getTime(); // last log date
+        const condition = Math.floor((now - lastLog) / (1000 * 60))-120 < 6;
         setIsOn(condition);
     };
 
@@ -34,7 +34,7 @@ const Main: React.FC<CompProps> = ({ data }) => {
     }
 
     useEffect(() => {
-        checkIfIsOn(data);
+        pollingData()
         setInterval(pollingData, 1 * 60 * 1000);
         setLastLog(dateToString(data[0].date));
     }, []);
