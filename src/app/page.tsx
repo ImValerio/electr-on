@@ -1,9 +1,10 @@
 import Main from "./components/Main";
 import { getLogs } from "./lib/utils";
 
-export default async function Home() {
-    // const data = await getLogs();
-    const data = await getLogs();
+import React from 'react'
+
+const Page = async () => {
+  const data = await getLogs();
 
 
     return (
@@ -11,6 +12,9 @@ export default async function Home() {
         <Main data={data}></Main>
     );
 }
+
+export default Page
+
 
 
 
